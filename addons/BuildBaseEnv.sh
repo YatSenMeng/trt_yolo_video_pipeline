@@ -18,7 +18,7 @@ cd ./opencv-4.8.0 \
   && cd ../../
 
 # 安装x264
-sudo apt-get install nasm
+apt-get install nasm -y
 cd ./x264-master \
   && ./configure --enable-shared \
   && make -j10 \
@@ -26,8 +26,8 @@ cd ./x264-master \
   && cd ../
 
 # 安装ffmpeg
-sudo apt-get install yasm -y
-sudo apt install libx264-dev libx265-dev  \
+apt-get install yasm -y
+apt install -y libx264-dev libx265-dev  \
          libfdk-aac-dev libmp3lame-dev libvorbis-dev 
 cd ./ffmpeg-5.1.2 \
   && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
@@ -36,10 +36,11 @@ cd ./ffmpeg-5.1.2 \
                  --disable-static \
   && make -j10 \
   && make install \
+  && ldconfig \
   && cd ../
 
 
-# 安装ffmpeg支持nvidia硬件加速
+# 安装ffmpeg支持nvidia硬件加速`
 # 查看对应的nvidia驱动版本和显卡型号，然后去nvidia官网下载对应的nv-codec-headers，有的计算卡卡不带编解码器就不支持硬件加速
 # 1、安装nv-codec-headers
 # 2、安装ffmpeg
@@ -63,6 +64,7 @@ cd ./ffmpeg-5.1.2 \
 #                  --extra-ldflags=-L/usr/local/cuda/lib64 \
 #   && make -j10 \
 #   && make install \
+#   && ldconfig \
 #   && cd ../
 
 # 安装oatpp
@@ -71,6 +73,7 @@ cd ./ffmpeg-5.1.2 \
 # mkdir build && cd build
 # cmake ..
 # sudo make && sudo make install
+
 
 # 安装json cpp
 # cd jsoncpp-1.9.5
@@ -86,5 +89,3 @@ rm -rf ./opencv-4.8.0
 rm -rf ./opencv_contrib-4.8.0
 rm -rf ./x264-master
 rm -rf ./ffmpeg-5.1.2
-
-

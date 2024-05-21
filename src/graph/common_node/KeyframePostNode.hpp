@@ -54,6 +54,7 @@ public:
     explicit KeyframePostNode(const std::string &name,
                               const std::string &client_url,
                               const std::string &post_url,
+                              const std::string &task_no,
                               int64              post_cycle = 0);
 
 private:
@@ -64,6 +65,7 @@ private:
     std::string               m_post_url;            // 请求接口后缀  /api/v1/xxx
     httplib::Client           m_client;              // http client
     int64                     m_post_cycle     = 0;  // 上传周期 单位s
-    int64                     m_last_post_time = 0 ;  // 上次上传时间
+    int64                     m_last_post_time = 0;  // 上次上传时间
+    std::string               m_task_no;             // AI 服务编号
 };
 }  // namespace Node

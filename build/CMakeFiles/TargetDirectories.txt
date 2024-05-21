@@ -1,0 +1,6 @@
+/yzh_ai_service/build/CMakeFiles/rebuild_cache.dir
+/yzh_ai_service/build/CMakeFiles/edit_cache.dir
+/yzh_ai_service/build/CMakeFiles/test_yolo_detect.dir
+/yzh_ai_service/build/CMakeFiles/trt_cpp_lib.dir
+/yzh_ai_service/build/CMakeFiles/cuda_lib.dir
+/yzh_ai_service/build/CMakeFiles/cpp_lib.dir

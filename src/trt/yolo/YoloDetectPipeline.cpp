@@ -7,6 +7,7 @@
 #include "ffmpeg/ffmpeg_node/FFmpegReadNode.h"
 #include "ffmpeg/ffmpeg_node/FFmpegRecordNode.h"
 #include "graph/common_node/ImageDrawNode.hpp"
+#include "graph/common_node/KeyframePostNode.hpp"
 
 #include "infer/InferNode.h"
 namespace pipeline {
@@ -14,6 +15,8 @@ namespace pipeline {
 YoloDetectPipeline::YoloDetectPipeline(std::string              task_name,
                                        std::string              input_url,
                                        std::string              output_url,
+                                       std::string              keyframe_url,
+                                       std::string              task_no,
                                        const infer::Infer::ptr &trt_instance,
                                        int                      output_width,
                                        int                      output_height,
@@ -22,6 +25,8 @@ YoloDetectPipeline::YoloDetectPipeline(std::string              task_name,
     : Pipeline(std::move(task_name)),
       m_input_url(std::move(input_url)),
       m_output_url(std::move(output_url)),
+      m_keyframe_url(std::move(keyframe_url)),
+      m_task_no(std::move(task_no)),
       m_output_width(output_width),
       m_output_height(output_height),
       m_output_fps(output_fps),
@@ -49,7 +54,16 @@ bool YoloDetectPipeline::Init() {
                                                  input_h, AV_PIX_FMT_BGR24, m_output_width,
                                                  m_output_height, AV_PIX_FMT_YUV420P, fps, bitrate);
     ASSERT_INIT(ffmpeg_output_node->Init());
-    auto record_node = std::make_shared<Node::FFmpegRecordNode>("record_node");
+    //auto record_node = std::make_shared<Node::FFmpegRecordNode>("record_node");
+    
+    std::string client_url;
+    std::string post_url;
+    int str_idx1 = m_keyframe_url.find_last_of(":");
+    int str_idx2 = m_keyframe_url.find("/", str_idx1);
+    client_url = m_keyframe_url.substr(0, str_idx2);
+    post_url = m_keyframe_url.substr(str_idx2);
+    auto KeyframePostNode = 
+            std::make_shared<Node::KeyframePostNode>("KeyframePostNode", client_url, post_url, m_task_no,2);
 
     trt_node->set_trt_instance(m_trt_instance);
 
@@ -73,13 +87,16 @@ bool YoloDetectPipeline::Init() {
     GraphCore::LinkNode(ffmpeg_input_node, trt_node);
     GraphCore::LinkNode(trt_node, trt_draw_node);
     GraphCore::LinkNode(trt_draw_node, ffmpeg_output_node);
-    GraphCore::LinkNode(trt_draw_node, record_node);
+    GraphCore::LinkNode(trt_node, KeyframePostNode);
+    // GraphCore::LinkNode(trt_draw_node, record_node);
 
     m_nodes["ffmpeg_input_node"]  = ffmpeg_input_node;
     m_nodes["trt_node"]           = trt_node;
     m_nodes["trt_draw_node"]      = trt_draw_node;
     m_nodes["ffmpeg_output_node"] = ffmpeg_output_node;
-    m_nodes["record_node"]        = record_node;
+    m_nodes["KeyframePostNode"]   = KeyframePostNode;
+
+    // m_nodes["record_node"]        = record_node;
 
     m_initialized = true;
     return true;

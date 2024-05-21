@@ -6,7 +6,7 @@
 #include "trt/yolo/YoloDetectPipeline.h"
 #include "trt/yolo/YoloDetectionInfer.h"
 
-int main() {
+int main(int argc, char** argv) {
     /*
      * 该示例展示了如何创建多个流水线，每个流水线都使用同一个多实例推理推理对象
      * 示例中创建了5个流水线（5路视频），分别在1号和2号显卡上各创建两个模型实例，进行轮询负载推理
@@ -15,10 +15,10 @@ int main() {
     // 流水线数量，即视频流数量
     // ps：这里只是示例，实际应用中可以根据实际情况修改，输入的视频都是同一个视频流
     int         stream_num        = 5;
-    std::string input_stream_url  = "输入流路径";
-    std::string output_stream_url = "输出流路径";
-    std::string model_path        = "TRTengine模型文件路径";
-    std::string label_path        = "检测分类类别文件路径";
+    std::string input_stream_url  = argv[1];
+    std::string output_stream_url = argv[2];
+    std::string model_path        = argv[3];
+    std::string label_path        = argv[4];
     int         max_batch_size    = 16;    // 最大batch数
     float       config_threshold  = 0.25;  // 检测阈值
     float       nms_threshold     = 0.5;   // nms阈值
